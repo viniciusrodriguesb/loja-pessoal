@@ -1383,9 +1383,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\vinic\\OneDrive\\Área de Trabalho\\loja-pessoal\\backend\\backend-loja\\Web-Api.csproj",
-      "projectName": "Web-Api",
-      "projectPath": "C:\\Users\\vinic\\OneDrive\\Área de Trabalho\\loja-pessoal\\backend\\backend-loja\\Web-Api.csproj",
+      "projectUniqueName": "C:\\Users\\vinic\\OneDrive\\Área de Trabalho\\loja-pessoal\\backend\\backend-loja\\WebApi.csproj",
+      "projectName": "WebApi",
+      "projectPath": "C:\\Users\\vinic\\OneDrive\\Área de Trabalho\\loja-pessoal\\backend\\backend-loja\\WebApi.csproj",
       "packagesPath": "C:\\Users\\vinic\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\vinic\\OneDrive\\Área de Trabalho\\loja-pessoal\\backend\\backend-loja\\obj\\",
       "projectStyle": "PackageReference",
