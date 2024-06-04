@@ -1,4 +1,4 @@
-namespace backend_loja
+﻿namespace Application.DTO
 {
     public class WeatherForecast
     {
@@ -10,4 +10,5 @@ namespace backend_loja
 
         public string? Summary { get; set; }
     }
+
 }
