@@ -71,6 +71,27 @@ namespace Application.Services
             };
             return response;
         }
+        public async Task<UsuarioModel> BuscarUsuario(UsuarioRequest request)
+        {
+            var usuario = await _dbContext.UsuarioModel
+                                          .AsNoTracking()
+                                          .Where(x => x.Usuario == request.Usuario &&
+                                                      x.Senha == request.Senha)
+                                          .Select(u => new UsuarioModel
+                                          {
+                                              Id = u.Id,
+                                              Usuario = u.Usuario,
+                                              Email = u.Email,
+                                              Senha = u.Senha,
+                                              //Role = u.Role
+                                          })
+                                          .FirstOrDefaultAsync();
+
+            if (usuario == null)
+                return new UsuarioModel();
+
+            return usuario;
+        }
         public async Task<bool> EditarUsuario(UsuarioEditadoRequest request, int Id)
         {
             try

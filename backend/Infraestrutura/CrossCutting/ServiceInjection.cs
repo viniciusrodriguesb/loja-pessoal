@@ -9,6 +9,7 @@ namespace Infrastructure.CrossCutting
         public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<UsuarioService>();
+            services.AddScoped<TokenService>();
 
             return services;
         }

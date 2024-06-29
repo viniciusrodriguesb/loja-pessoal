@@ -1,5 +1,6 @@
 ﻿using Application.DTO.Request;
 using Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
@@ -33,6 +34,7 @@ namespace WebApi.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("buscar-usuario/{id}")]
         public async Task<IActionResult> BuscarUsuario(int id)
         {
