@@ -8,6 +8,9 @@
         public decimal VrProdutoFornecedor { get; set; }
         public int QtProdutoFornecedor { get; set; }
 
-        //public TB002_EMPRESA EmpresaNavigation { get; set; }
+        #region Navigations
+        public TB002_EMPRESA EmpresaNavigation { get; set; } 
+        #endregion
+
     }
 }

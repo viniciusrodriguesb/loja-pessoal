@@ -7,6 +7,10 @@
         public string NoProduto { get; set; }
         public decimal VrProduto { get; set; }
 
-        //public TB002_EMPRESA EmpresaNavigation { get; set; }
+        #region Navigations
+        public TB002_EMPRESA EmpresaNavigation { get; set; } 
+        public List<TB008_MOVIMENTACAO> MovimentacoesNavigation { get; set; } 
+        #endregion
+
     }
 }
