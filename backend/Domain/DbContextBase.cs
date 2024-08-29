@@ -128,9 +128,9 @@ namespace Infrastructure.Persistence
                     .WithMany(p => p.ProdutosGrupoNavigation)
                     .HasForeignKey(p => p.NuGrupo);
 
-                e.HasOne(p => p.GrupoNavigation)
+                e.HasOne(p => p.ProdutoNavigation)
                     .WithMany(p => p.ProdutosGrupoNavigation)
-                    .HasForeignKey(p => p.NuGrupo);
+                    .HasForeignKey(p => p.NuProduto);
             });
 
             modelBuilder.Entity<TB008_MOVIMENTACAO>(e =>
