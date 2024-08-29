@@ -1,5 +1,4 @@
-﻿using Application.DTO.Request;
-using Application.Services;
+﻿using Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
@@ -8,6 +7,7 @@ namespace WebApi.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
+        #region Inicializadores e Construtor
         private readonly UsuarioService _usuarioService;
         private readonly TokenService _tokenService;
         public LoginController(UsuarioService usuarioService,
@@ -15,21 +15,22 @@ namespace WebApi.Controllers
         {
             _usuarioService = usuarioService;
             _tokenService = tokenService;
-        }
+        } 
+        #endregion
 
         [HttpPost("autenticar")]
-        public async Task<ActionResult<dynamic>> Authenticate([FromBody] UsuarioRequest request)
+        public async Task<ActionResult<dynamic>> Authenticate([FromBody] int Id)
         {
-            var usuario = await _usuarioService.BuscarUsuario(request);
+            var usuario = await _usuarioService.ListarInformacoesUsuario(Id);
 
             if (usuario == null) 
                 return NotFound();
 
-            var token = _tokenService.GerarToken(usuario);
+            var token = _tokenService.GerarToken();
 
             return new
             {
-                Useer = usuario,
+                User = usuario,
                 Token = token
             };
 

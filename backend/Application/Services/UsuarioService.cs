@@ -3,19 +3,13 @@ using Application.DTO.Response;
 using Domain.Entities;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Services
 {
     public class UsuarioService
     {
+        #region Inicializadores e Construtor
         private readonly ILogger<UsuarioService> _logger;
         private readonly DbContextBase _dbContext;
         public UsuarioService(
@@ -25,25 +19,26 @@ namespace Application.Services
             _dbContext = dbContext;
             _logger = logger;
         }
+        #endregion
 
         public async Task<bool> CriarUsuario(NovoUsuarioRequest request)
         {
             if (request == null)
                 new ArgumentException("Dados da requisição vazios, preencha novamente.");
 
-            var usuarioExistente = await _dbContext.UsuarioModel
+            var usuarioExistente = await _dbContext.TB001_USUARIO
                                           .AsNoTracking()
-                                          .Where(x => x.Usuario == request.Usuario || x.Email == request.Email)
+                                          .Where(x => x.NoUsuario == request.Usuario || x.NoEmail == request.Email)
                                           .AnyAsync();
 
             if (usuarioExistente)
                 new ArgumentException("Email ou Usuários já existentes.");
 
-            var novoUsuario = new UsuarioModel()
+            var novoUsuario = new TB001_USUARIO()
             {
-                Usuario = request.Usuario,
-                Email = request.Email,
-                Senha = request.Senha
+                NoUsuario = request.Usuario,
+                NoEmail = request.Email,
+                CoSenha = request.Senha
             };
 
             await _dbContext.AddAsync(novoUsuario);
@@ -56,49 +51,27 @@ namespace Application.Services
         }
         public async Task<UsuarioResponse> ListarInformacoesUsuario(int Id)
         {
-            var usuario = await _dbContext.UsuarioModel
+            var usuario = await _dbContext.TB001_USUARIO
                                           .AsNoTracking()
-                                          .Where(x => x.Id == Id)
-                                          .FirstOrDefaultAsync();
-            if (usuario == null)
-                return new UsuarioResponse();
-
-            var response = new UsuarioResponse()
-            {
-                Email = usuario.Email,
-                Usuario = usuario.Usuario,
-                Senha = usuario.Senha
-            };
-            return response;
-        }
-        public async Task<UsuarioModel> BuscarUsuario(UsuarioRequest request)
-        {
-            var usuario = await _dbContext.UsuarioModel
-                                          .AsNoTracking()
-                                          .Where(x => x.Usuario == request.Usuario &&
-                                                      x.Senha == request.Senha)
-                                          .Select(u => new UsuarioModel
+                                          .Where(x => x.NuUsuario == Id)
+                                          .Select(u => new UsuarioResponse()
                                           {
-                                              Id = u.Id,
-                                              Usuario = u.Usuario,
-                                              Email = u.Email,
-                                              Senha = u.Senha,
-                                              //Role = u.Role
+                                              Usuario = u.NoUsuario,
+                                              Email = u.NoEmail,
+                                              Senha = u.CoSenha
                                           })
                                           .FirstOrDefaultAsync();
 
             if (usuario == null)
-                return new UsuarioModel();
+                return null;
 
             return usuario;
-        }
+        }        
         public async Task<bool> EditarUsuario(UsuarioEditadoRequest request, int Id)
         {
             try
             {
-                var usuario = await _dbContext.UsuarioModel
-                                                      .Where(x => x.Id == Id)
-                                                      .FirstOrDefaultAsync();
+                var usuario = await _dbContext.TB001_USUARIO.FirstOrDefaultAsync(x => x.NuUsuario == Id);
 
                 if (usuario == null)
                 {
@@ -106,11 +79,11 @@ namespace Application.Services
                     return false;
                 }
 
-                usuario.Usuario = request.NovoUsuario;
-                usuario.Email = request.NovoEmail;
-                usuario.Senha = request.NovaSenha;
+                usuario.NoUsuario = request.NovoUsuario;
+                usuario.NoEmail = request.NovoEmail;
+                usuario.CoSenha = request.NovaSenha;
 
-                _dbContext.UsuarioModel.Update(usuario);
+                _dbContext.TB001_USUARIO.Update(usuario);
                 await _dbContext.SaveChangesAsync();
 
                 return true;
@@ -126,8 +99,5 @@ namespace Application.Services
                 throw;
             }
         }
-
-
-
     }
 }

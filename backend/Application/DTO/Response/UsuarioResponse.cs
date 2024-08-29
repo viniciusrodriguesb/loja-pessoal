@@ -4,6 +4,7 @@
     {
         private string _senha;
         private string _email;
+
         public string Usuario { get; set; }
         public string Senha { get => MascararSenha(_senha); set => _senha = value; }
         public string Email { get => MascararEmail(_email); set => _email = value; }
@@ -23,7 +24,6 @@
             int atIndex = email.IndexOf('@');
 
             return new string('*', atIndex) + email.Substring(atIndex);
-
         }
 
     }

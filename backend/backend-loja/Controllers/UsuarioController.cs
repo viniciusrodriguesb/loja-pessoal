@@ -9,12 +9,16 @@ namespace WebApi.Controllers
     [ApiController]
     public class UsuarioController : ControllerBase
     {
+
+        #region Inicializadores e Construtor
         private readonly UsuarioService _usuarioService;
         public UsuarioController(UsuarioService usuarioService)
         {
             _usuarioService = usuarioService;
-        }
+        } 
+        #endregion
 
+        [Authorize]
         [HttpPost("criar")]
         public async Task<IActionResult> CriarUsuario(NovoUsuarioRequest request)
         {
@@ -28,12 +32,11 @@ namespace WebApi.Controllers
             {
                 return StatusCode(400, ex);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(500, "Erro de serviço");
             }
         }
-
         [Authorize]
         [HttpGet("buscar-usuario/{id}")]
         public async Task<IActionResult> BuscarUsuario(int id)
@@ -43,7 +46,7 @@ namespace WebApi.Controllers
                 var result = await _usuarioService.ListarInformacoesUsuario(id);
 
                 if (result == null)
-                    return StatusCode(204);
+                    return StatusCode(204, "Usuario não encontrado.");
 
                 return StatusCode(200, result);
             }
@@ -52,6 +55,7 @@ namespace WebApi.Controllers
                 return StatusCode(500, "Erro de serviço");
             }
         }
+        [Authorize]
         [HttpPut("editar-usuario")]
         public async Task<IActionResult> EditarUsuario([FromBody] UsuarioEditadoRequest request, [FromQuery] int Id)
         {
