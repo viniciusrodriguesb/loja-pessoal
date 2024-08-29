@@ -7,5 +7,7 @@
         public string CoSenha { get; set; }
         public string NoEmail { get; set; }
         public string NoUsuario { get; set; }
+
+        public List<TB003_USUARIO_EMPRESA> UsuarioEmpresaNavigation { get; set; }
     }
 }
