@@ -10,6 +10,7 @@
         #region Navigations
         public TB002_EMPRESA EmpresaNavigation { get; set; } 
         public List<TB008_MOVIMENTACAO> MovimentacoesNavigation { get; set; } 
+        public List<TB007_PRODUTO_GRUPO> ProdutosGrupoNavigation { get; set; }
         #endregion
 
     }
