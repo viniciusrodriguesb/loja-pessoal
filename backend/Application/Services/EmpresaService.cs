@@ -53,7 +53,7 @@ namespace Application.Services
 			return true;
 		}
 
-		public async Task<bool> EditarEmpresa(NovaEmpresaRequest request, int nuEmpresa)
+		public async Task<bool> EditarEmpresa(EmpresaEditadaRequest request, int nuEmpresa)
 		{
 			try
 			{

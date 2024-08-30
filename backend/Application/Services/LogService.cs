@@ -40,5 +40,29 @@ namespace Application.Services
 
 			return true;
 		}
+
+		public async Task<bool> CriarLogGrupo(LogGrupoDTO logGrupo)
+		{
+			if (logGrupo == null)
+				new ArgumentException("Dados do log vazios, preencha novamente.");
+
+			var novoLog = new TB506_LOG_GRUPO()
+			{
+				NuGrupo = logGrupo.Grupo.NuGrupo,
+				NoGrupo = logGrupo.Grupo.NoGrupo,
+				VrGrupo = logGrupo.Grupo.VrGrupo,
+				DhOperacao = DateTime.Now,
+				IcOperacao = (int)logGrupo.TpOperacao
+			};
+
+			await _dbContext.TB506_LOG_GRUPO.AddAsync(novoLog);
+
+			var resultado = await _dbContext.SaveChangesAsync();
+
+			if (resultado == 0)
+				return false;
+
+			return true;
+		}
 	}
 }

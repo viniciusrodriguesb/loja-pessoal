@@ -3,9 +3,9 @@ using Domain.Entities;
 
 namespace Application.DTO
 {
-	public class LogEmpresaDTO
+	public class LogGrupoDTO
 	{
-		public TB002_EMPRESA Empresa { get; set; }
+		public TB006_GRUPO Grupo { get; set; }
 		public TipoOperacao TpOperacao { get; set; }
 	}
 }

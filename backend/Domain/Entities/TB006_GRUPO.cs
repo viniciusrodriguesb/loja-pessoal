@@ -4,7 +4,7 @@
 	{
 		public int NuGrupo { get; set; }
 		public string NoGrupo { get; set; }	
-		public decimal VrGrupo { get; set; }
+		public float VrGrupo { get; set; }
 
 		#region Navigations
 		public virtual List<TB007_PRODUTO_GRUPO> ProdutosGrupoNavigation { get; set; }

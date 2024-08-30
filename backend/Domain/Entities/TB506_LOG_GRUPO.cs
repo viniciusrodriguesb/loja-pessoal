@@ -10,8 +10,8 @@ namespace Domain.Entities
 	{
 		public int NuLogGrupo { get; set; }
 		public int NuGrupo { get; set; }
-		public int NoGrupo { get; set; }
-		public decimal VrGrupo { get; set; }
+		public string NoGrupo { get; set; }
+		public float VrGrupo { get; set; }
 		public int IcOperacao { get; set; }
 		public DateTime DhOperacao { get; set; }
 	}
