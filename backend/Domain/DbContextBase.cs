@@ -143,7 +143,7 @@ namespace Infrastructure.Persistence
                 e.Property(p => p.NuProduto).HasColumnName("NU_PRODUTO");
                 e.Property(p => p.NuMovimentacao).HasColumnName("NU_MOVIMENTACA");
                 e.Property(p => p.TpPagamento).HasColumnName("TP_PAGAMENTO");
-                e.Property(p => p.DhEvento).HasColumnName("DH_EVENTO");
+                e.Property(p => p.DhEvento).HasColumnType("timestamp(6) without time zone").HasColumnName("DH_EVENTO");
 
                 e.HasOne(p => p.ProdutoNavigation)
                  .WithMany(p => p.MovimentacoesNavigation)
@@ -166,18 +166,18 @@ namespace Infrastructure.Persistence
                 e.Property(p => p.NoEmpresa).HasColumnName("NO_EMPRESA");
                 e.Property(p => p.CoCnpj).HasColumnName("CO_CNPJ");
                 e.Property(p => p.IcOperacao).HasColumnName("IC_OPERACAO");
-                e.Property(p => p.DhOperacao).HasColumnName("DH_OPERACAO");
+                e.Property(p => p.DhOperacao).HasColumnType("timestamp(6) without time zone").HasColumnName("DH_OPERACAO");
             });
 
             modelBuilder.Entity<TB503_LOG_USUARIO_EMPRESA>(e =>
             {
-                e.ToTable("TB502_LOG_EMPRESA");
+                e.ToTable("TB503_LOG_USUARIO_EMPRESA");
 
                 e.HasKey(p => p.NuLogUsuarioEmpresa).HasName("PK_TB503");
 
                 e.Property(p => p.NuLogUsuarioEmpresa).HasColumnName("NU_LOG_USUARIO_EMPRESA");
                 e.Property(p => p.IcOperacao).HasColumnName("IC_OPERACAO");
-                e.Property(p => p.DhOperacao).HasColumnName("DH_OPERACAO");
+                e.Property(p => p.DhOperacao).HasColumnType("timestamp(6) without time zone").HasColumnName("DH_OPERACAO");
                 e.Property(p => p.NuEmpresa).HasColumnName("NU_EMPRESA");
                 e.Property(p => p.NuUsuario).HasColumnName("NU_USUARIO");
             });
@@ -193,7 +193,7 @@ namespace Infrastructure.Persistence
                 e.Property(p => p.QtProdutoFornecedor).HasColumnName("QT_PRODUTO_FORNECEDOR");
                 e.Property(p => p.NoProdutoFornecedor).HasColumnName("NO_PRODUTOO_FORNECEDOR");
                 e.Property(p => p.VrProdutoFornecedor).HasColumnName("VR_PRODUTO_FORNECEDOR");
-                e.Property(p => p.DhOperacao).HasColumnName("DH_OPERACAO");
+                e.Property(p => p.DhOperacao).HasColumnType("timestamp(6) without time zone").HasColumnName("DH_OPERACAO");
                 e.Property(p => p.IcOperacao).HasColumnName("IC_OPERACA");
                 e.Property(p => p.NuLogFornecedor).HasColumnName("NU_LOG_FORNECEDOR");
             });
@@ -207,7 +207,7 @@ namespace Infrastructure.Persistence
                 e.Property(p => p.NuLogProduto).HasColumnName("NU_LOG_PRODUTO");
                 e.Property(p => p.IcOperacao).HasColumnName("IC_OPERACAO");
                 e.Property(p => p.VrProduto).HasColumnName("VR_PRODUTO");
-                e.Property(p => p.DhOperacao).HasColumnName("DH_OPERACAO");
+                e.Property(p => p.DhOperacao).HasColumnType("timestamp(6) without time zone").HasColumnName("DH_OPERACAO");
                 e.Property(p => p.NuEmpresa).HasColumnName("NU_EMPRESA");
                 e.Property(p => p.NuProduto).HasColumnName("NU_PRODUTO");
                 e.Property(p => p.NoProduto).HasColumnName("NO_PRODUTO");
@@ -225,7 +225,7 @@ namespace Infrastructure.Persistence
                 e.Property(p => p.NoGrupo).HasColumnName("NO_GRUPO");
                 e.Property(p => p.VrGrupo).HasColumnName("VR_GRUPO");
                 e.Property(p => p.IcOperacao).HasColumnName("IC_OPERACAO");
-                e.Property(p => p.DhOperacao).HasColumnName("DH_OPERACAO");
+                e.Property(p => p.DhOperacao).HasColumnType("timestamp(6) without time zone").HasColumnName("DH_OPERACAO");
             });
 
             modelBuilder.Entity<TB507_LOG_PRODUTO_GRUPO>(e =>
@@ -238,7 +238,7 @@ namespace Infrastructure.Persistence
                 e.Property(p => p.NuGrupo).HasColumnName("NU_GRUPO");
                 e.Property(p => p.NuProduto).HasColumnName("NU_PRODUTO");
                 e.Property(p => p.IcOperacao).HasColumnName("IC_OPERACAO");
-                e.Property(p => p.DhOperacao).HasColumnName("DH_OPERACAO");
+                e.Property(p => p.DhOperacao).HasColumnType("timestamp(6) without time zone").HasColumnName("DH_OPERACAO");
             });
 
             modelBuilder.Entity<TB508_LOG_MOVIMENTACAO>(e =>
@@ -252,9 +252,9 @@ namespace Infrastructure.Persistence
                 e.Property(p => p.TpPagamento).HasColumnName("TP_PAGAMENTO");
                 e.Property(p => p.NuGrupo).HasColumnName("NU_GRUPO");
                 e.Property(p => p.NuProduto).HasColumnName("NU_PRODUTO");
-                e.Property(p => p.DhEvento).HasColumnName("DH_EVENTO");
+                e.Property(p => p.DhEvento).HasColumnType("timestamp(6) without time zone").HasColumnName("DH_EVENTO");
                 e.Property(p => p.IcOperacao).HasColumnName("IC_OPERACAO");
-                e.Property(p => p.DhOperacao).HasColumnName("DH_OPERACAO");
+                e.Property(p => p.DhOperacao).HasColumnType("timestamp(6) without time zone").HasColumnName("DH_OPERACAO");
             });
             #endregion
         }

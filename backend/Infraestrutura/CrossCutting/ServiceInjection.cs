@@ -14,6 +14,7 @@ namespace Infrastructure.CrossCutting
             services.AddScoped<UsuarioService>();
             services.AddScoped<TokenService>();
             services.AddScoped<EmpresaService>();
+            services.AddScoped<LogService>();
 
             return services;
         }
