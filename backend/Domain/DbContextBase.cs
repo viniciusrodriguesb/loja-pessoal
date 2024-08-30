@@ -16,6 +16,7 @@ namespace Infrastructure.Persistence
         public DbSet<TB006_GRUPO> TB006_GRUPO { get; set; }
         public DbSet<TB007_PRODUTO_GRUPO> TB007_PRODUTO_GRUPO { get; set; }
         public DbSet<TB008_MOVIMENTACAO> TB008_MOVIMENTACAO { get; set; }
+        public DbSet<TB501_LOG_USUARIO> TB501_LOG_USUARIO { get; set; }
         public DbSet<TB502_LOG_EMPRESA> TB502_LOG_EMPRESA { get; set; }
         public DbSet<TB503_LOG_USUARIO_EMPRESA> TB503_LOG_USUARIO_EMPRESA { get; set; }
         public DbSet<TB504_LOG_FORNECEDOR> TB504_LOG_FORNECEDOR { get; set; }
@@ -80,6 +81,7 @@ namespace Infrastructure.Persistence
                 e.Property(p => p.NuFornecedor).HasColumnName("NU_FORNECEDOR");
                 e.Property(p => p.NuEmpresa).HasColumnName("NU_EMPRESA");
                 e.Property(p => p.NoFornecedor).HasColumnName("NO_FORNECEDOR");
+                e.Property(p => p.NoProdutoFornecedor).HasColumnName("NO_PRODUTO_FORNECEDOR");
                 e.Property(p => p.VrProdutoFornecedor).HasColumnName("VR_PRODUTO_FORNECEDOR");
                 e.Property(p => p.QtProdutoFornecedor).HasColumnName("QT_PRODUTO_FORNECEDOR");
 
@@ -155,6 +157,22 @@ namespace Infrastructure.Persistence
             });
 
             #region Tabelas de Log
+            modelBuilder.Entity<TB501_LOG_USUARIO>(e =>
+            {
+                e.ToTable("TB501_LOG_USUARIO");
+
+                e.HasKey(p => p.NuLogUsuario).HasName("PK_TB501");
+
+                e.Property(p => p.IcOperacao).HasColumnName("IC_OPERACAO");
+                e.Property(p => p.IcUsuario).HasColumnName("IC_USUARIO");
+                e.Property(p => p.DhOperacao).HasColumnType("timestamp(6) without time zone").HasColumnName("DH_OPERACAO");
+                e.Property(p => p.NuLogUsuario).HasColumnName("NU_LOG_USUARIO");
+                e.Property(p => p.NuUsuario).HasColumnName("NU_USUARIO");
+                e.Property(p => p.CoSenha).HasColumnName("CO_SENHA");
+                e.Property(p => p.NoEmail).HasColumnName("NO_EMAIL");
+                e.Property(p => p.NoUsuario).HasColumnName("NO_USUARIO");
+            });
+
             modelBuilder.Entity<TB502_LOG_EMPRESA>(e =>
             {
                 e.ToTable("TB502_LOG_EMPRESA");

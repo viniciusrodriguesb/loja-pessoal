@@ -15,10 +15,9 @@ namespace WebApi.Controllers
         public UsuarioController(UsuarioService usuarioService)
         {
             _usuarioService = usuarioService;
-        } 
+        }
         #endregion
 
-        [Authorize]
         [HttpPost("criar")]
         public async Task<IActionResult> CriarUsuario(NovoUsuarioRequest request)
         {
@@ -26,48 +25,63 @@ namespace WebApi.Controllers
             {
                 var result = await _usuarioService.CriarUsuario(request);
 
-                return StatusCode(200, result);
+                return StatusCode(StatusCodes.Status200OK, result);
             }
             catch (ArgumentException ex)
             {
-                return StatusCode(400, ex);
+                return StatusCode(StatusCodes.Status400BadRequest, ex);
             }
             catch (Exception)
             {
-                return StatusCode(500, "Erro de serviço");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Erro de serviço");
             }
         }
         [Authorize]
-        [HttpGet("buscar-usuario/{id}")]
+        [HttpGet("buscar/{id}")]
         public async Task<IActionResult> BuscarUsuario(int id)
         {
             try
             {
-                var result = await _usuarioService.ListarInformacoesUsuario(id);
+                var result = await _usuarioService.BuscarUsuarioId(id);
 
                 if (result == null)
-                    return StatusCode(204, "Usuario não encontrado.");
+                    return StatusCode(StatusCodes.Status204NoContent, "Usuario não encontrado.");
 
-                return StatusCode(200, result);
+                return StatusCode(StatusCodes.Status200OK, result);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Erro de serviço");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Erro de serviço");
             }
         }
         [Authorize]
-        [HttpPut("editar-usuario")]
+        [HttpPut("editar")]
         public async Task<IActionResult> EditarUsuario([FromBody] UsuarioEditadoRequest request, [FromQuery] int Id)
         {
             try
             {
                 var result = await _usuarioService.EditarUsuario(request, Id);
 
-                return StatusCode(200, result);
+                return StatusCode(StatusCodes.Status200OK, result);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Erro de serviço");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Erro de serviço");
+            }
+        }
+        [Authorize]
+        [HttpDelete("deletar")]
+        public async Task<IActionResult> DeletarUsuario([FromBody] int Id)
+        {
+            try
+            {
+                var result = await _usuarioService.DeletarUsuario(Id);
+
+                return StatusCode(StatusCodes.Status200OK, result);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Erro de serviço");
             }
         }
     }
