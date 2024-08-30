@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Domain.Entities
+﻿namespace Domain.Entities
 {
-	public class TB508_LOG_MOVIMENTACAO
+    public class TB508_LOG_MOVIMENTACAO
 	{
 		public int NuLogMovimentacao { get; set; }
 		public int NuMovimentacao { get; set; }

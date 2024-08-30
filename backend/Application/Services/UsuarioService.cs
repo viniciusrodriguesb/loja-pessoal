@@ -28,8 +28,8 @@ namespace Application.Services
 
             var usuarioExistente = await _dbContext.TB001_USUARIO
                                           .AsNoTracking()
-                                          .Where(x => x.NoUsuario == request.Usuario || x.NoEmail == request.Email)
-                                          .AnyAsync();
+                                          .AnyAsync(x => x.NoUsuario == request.Usuario &&
+                                                         x.NoEmail == request.Email);
 
             if (usuarioExistente)
                 new ArgumentException("Email ou Usuários já existentes.");
@@ -66,7 +66,7 @@ namespace Application.Services
                 return null;
 
             return usuario;
-        }        
+        }
         public async Task<bool> EditarUsuario(UsuarioEditadoRequest request, int Id)
         {
             try

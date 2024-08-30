@@ -2,10 +2,14 @@
 {
     public class TB503_LOG_USUARIO_EMPRESA
     {
-        public int NuLogUsuarioEmpresa { get; set; }
-        public int IcOperacao { get; set; }
+        public short IcOperacao { get; set; }
+
         public DateTime DhOperacao { get; set; }
-        public int? NuEmpresa { get; set; }
-        public int? NuUsuario { get; set; }
-    }   
+
+        public long? NuEmpresa { get; set; }
+
+        public long NuLogUsuarioEmpresa { get; set; }
+
+        public long? NuUsuario { get; set; }
+    }
 }

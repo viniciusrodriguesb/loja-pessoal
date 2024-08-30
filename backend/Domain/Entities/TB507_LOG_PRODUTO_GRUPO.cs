@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Domain.Entities
+﻿namespace Domain.Entities
 {
-	public class TB507_LOG_PRODUTO_GRUPO
+    public class TB507_LOG_PRODUTO_GRUPO
 	{
 		public int NuLogProdutoGrupo { get; set; }
 		public int NuProduto { get; set; }
