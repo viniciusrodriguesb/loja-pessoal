@@ -14,7 +14,7 @@ namespace WebApi.Controllers
 		}
 
 		[HttpPost("criar")]
-		public async Task<IActionResult> CriarEmpresa(NovaEmpresaRequest request)
+		public async Task<IActionResult> CriarEmpresa([FromBody]NovaEmpresaRequest request)
 		{
 			try
 			{
@@ -23,6 +23,54 @@ namespace WebApi.Controllers
 				return StatusCode(StatusCodes.Status200OK, resultado);
 			}
 			catch(Exception e)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError, "Erro de serviço");
+			}
+		}
+
+		[HttpGet("\"buscar/{nuEmpresa}\"")]
+		public async Task<IActionResult> BuscarEmpresa(int nuEmpresa)
+		{
+			try
+			{
+				var resultado = await _empresaService.BuscarEmpresa(nuEmpresa);
+
+				if (resultado == null)
+					return StatusCode(StatusCodes.Status204NoContent, "Empresa não encontrada.");
+
+				return StatusCode(StatusCodes.Status200OK, resultado);
+			}
+			catch (Exception e)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError, "Erro de serviço");
+			}
+		}
+
+		[HttpPut("editar")]
+		public async Task<IActionResult> EditarEmpresa([FromBody]NovaEmpresaRequest request, [FromQuery]int nuEmpresa)
+		{
+			try
+			{
+				var resultado = await _empresaService.EditarEmpresa(request, nuEmpresa);
+
+				return StatusCode(StatusCodes.Status200OK, resultado);
+			}
+			catch (Exception e)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError, "Erro de serviço");
+			}
+		}
+
+		[HttpDelete("deletar")]
+		public async Task<IActionResult> DeletarEmpresa([FromQuery] int nuEmpresa)
+		{
+			try
+			{
+				var resultado = await _empresaService.DeletarEmpresa(nuEmpresa);
+
+				return StatusCode(StatusCodes.Status200OK, resultado);
+			}
+			catch (Exception e)
 			{
 				return StatusCode(StatusCodes.Status500InternalServerError, "Erro de serviço");
 			}
