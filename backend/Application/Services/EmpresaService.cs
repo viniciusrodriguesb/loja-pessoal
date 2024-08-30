@@ -1,5 +1,6 @@
 ﻿using Application.Constantes.Enums;
 using Application.DTO;
+using Application.DTO.LogDTO;
 using Application.DTO.Request;
 using Domain.Entities;
 using Infrastructure.Persistence;

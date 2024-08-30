@@ -21,7 +21,7 @@ namespace WebApi.Controllers
         [HttpPost("autenticar")]
         public async Task<ActionResult<dynamic>> Authenticate([FromBody] int Id)
         {
-            var usuario = await _usuarioService.ListarInformacoesUsuario(Id);
+            var usuario = await _usuarioService.BuscarUsuarioId(Id);
 
             if (usuario == null) 
                 return NotFound();

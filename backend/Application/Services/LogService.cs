@@ -1,44 +1,68 @@
-﻿using Application.DTO;
+﻿using Application.DTO.LogDTO;
 using Domain.Entities;
 using Infrastructure.Persistence;
 using Microsoft.Extensions.Logging;
 
 namespace Application.Services
 {
-	public class LogService
-	{
+    public class LogService
+    {
 
-		private readonly DbContextBase _dbContext;
-		private readonly ILogger<LogService> _logger;
+        #region Inicializadores e Construtor
+        private readonly DbContextBase _dbContext;
+        private readonly ILogger<LogService> _logger;
+        public LogService(DbContextBase dbContext, ILogger<LogService> logger)
+        {
+            _dbContext = dbContext;
+            _logger = logger;
+        }
+        #endregion
 
-		public LogService(DbContextBase dbContext, ILogger<LogService> logger)
-		{
-			_dbContext = dbContext;
-			_logger = logger;
-		}
+        public async Task<bool> CriarLogUsuario(LogUsuarioDTO log)
+        {
+            if (log == null)
+                new ArgumentException("Dados do log vazios, preencha novamente.");
 
-		public async Task<bool> CriarLogEmpresa(LogEmpresaDTO logEmpresa)
-		{
-			if (logEmpresa == null)
-				new ArgumentException("Dados do log vazios, preencha novamente.");
+            var novoLog = new TB501_LOG_USUARIO()
+            {
+                NuUsuario = log.Usuario.NuUsuario,
+                CoSenha = log.Usuario.CoSenha,
+                IcUsuario = log.Usuario.IcUsuario,
+                NoEmail = log.Usuario.NoEmail,
+                NoUsuario = log.Usuario.NoUsuario,
+                DhOperacao = DateTime.Now,
+                IcOperacao = (short)log.TpOperacao
+            };
 
-			var novoLog = new TB502_LOG_EMPRESA()
-			{
-				CoCnpj = logEmpresa.Empresa.CoCnpj,
-				NoEmpresa = logEmpresa.Empresa.NoEmpresa,
-				NuEmpresa = logEmpresa.Empresa.NuEmpresa,
-				DhOperacao = DateTime.Now,
-				IcOperacao = (int)logEmpresa.TpOperacao
-			};
+            await _dbContext.TB501_LOG_USUARIO.AddAsync(novoLog);
+            var resultado = await _dbContext.SaveChangesAsync();
 
-			await _dbContext.TB502_LOG_EMPRESA.AddAsync(novoLog);
+            if (resultado == 0)
+                return false;
 
-			var resultado = await _dbContext.SaveChangesAsync();
+            return true;
+        }
+        public async Task<bool> CriarLogEmpresa(LogEmpresaDTO logEmpresa)
+        {
+            if (logEmpresa == null)
+                new ArgumentException("Dados do log vazios, preencha novamente.");
 
-			if (resultado == 0)
-				return false;
+            var novoLog = new TB502_LOG_EMPRESA()
+            {
+                CoCnpj = logEmpresa.Empresa.CoCnpj,
+                NoEmpresa = logEmpresa.Empresa.NoEmpresa,
+                NuEmpresa = logEmpresa.Empresa.NuEmpresa,
+                DhOperacao = DateTime.Now,
+                IcOperacao = (short)logEmpresa.TpOperacao
+            };
 
-			return true;
-		}
-	}
+            await _dbContext.TB502_LOG_EMPRESA.AddAsync(novoLog);
+            var resultado = await _dbContext.SaveChangesAsync();
+
+            if (resultado == 0)
+                return false;
+
+            return true;
+        }
+    }
 }
