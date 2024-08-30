@@ -28,17 +28,33 @@ namespace Application.Services
 
         public async Task<bool> CriarUsuario(NovoUsuarioRequest request)
         {
+            bool criou = false;
+
             if (request == null)
                 new ArgumentException("Dados da requisição vazios, preencha novamente.");
 
             var query = _dbContext.TB001_USUARIO.AsNoTracking().AsQueryable();
 
+            await _verificarExistenciaUsuario(request, query);
+
+            criou = await _gravarNovoUsuario(request);
+
+            await _gravarLogUsuario(request, query);
+
+            return criou;
+        }
+
+        #region Métodos Privados - CriarUsuario
+        private async Task _verificarExistenciaUsuario(NovoUsuarioRequest request, IQueryable<TB001_USUARIO> query)
+        {
             var usuarioExistente = await query.AnyAsync(x => x.NoUsuario == request.Usuario &&
-                                                             x.NoEmail == request.Email);
+                                                            x.NoEmail == request.Email);
 
             if (usuarioExistente)
                 new ArgumentException("Email ou Usuários já existentes.");
-
+        }
+        private async Task<bool> _gravarNovoUsuario(NovoUsuarioRequest request)
+        {
             var novoUsuario = new TB001_USUARIO()
             {
                 NoUsuario = request.Usuario,
@@ -49,23 +65,37 @@ namespace Application.Services
             await _dbContext.AddAsync(novoUsuario);
             var result = await _dbContext.SaveChangesAsync();
 
+            if (result == 0)
+                return false;
+
+            return true;
+        }
+        private async Task _gravarLogUsuario(NovoUsuarioRequest request, IQueryable<TB001_USUARIO> query)
+        {
             var usuario = await query.FirstOrDefaultAsync(x => x.NoUsuario == request.Usuario && x.CoSenha == request.Senha);
             var logDTO = new LogUsuarioDTO()
             {
                 Usuario = usuario,
                 TpOperacao = TipoOperacao.INSERCAO
             };
-
             await _logService.CriarLogUsuario(logDTO);
-
-            if (result == 0)
-                return false;
-
-            return true;
         }
+        #endregion
+
         public async Task<UsuarioResponse> BuscarUsuarioId(int Id)
         {
-            var usuario = await _dbContext.TB001_USUARIO
+            var usuario = await _consultarUsuario(Id);
+
+            if (usuario == null)
+                return null;
+
+            return usuario;
+        }
+
+        #region Métodos privados - BuscarUsuarioId
+        private async Task<UsuarioResponse> _consultarUsuario(int Id)
+        {
+            return await _dbContext.TB001_USUARIO
                                           .AsNoTracking()
                                           .Where(x => x.NuUsuario == Id)
                                           .Select(u => new UsuarioResponse()
@@ -75,40 +105,26 @@ namespace Application.Services
                                               Senha = u.CoSenha
                                           })
                                           .FirstOrDefaultAsync();
-
-            if (usuario == null)
-                return null;
-
-            return usuario;
         }
+        #endregion
+
         public async Task<bool> EditarUsuario(UsuarioEditadoRequest request, int Id)
         {
+            bool alterou = false;
             try
             {
                 var usuario = await _dbContext.TB001_USUARIO.FirstOrDefaultAsync(x => x.NuUsuario == Id);
                 if (usuario == null)
                 {
                     _logger.LogInformation("EditarUsuario: Usuário não encontrado");
-                    return false;
+                    return alterou;
                 }
 
-                usuario.NoUsuario = request.NovoUsuario;
-                usuario.NoEmail = request.NovoEmail;
-                usuario.CoSenha = request.NovaSenha;
+                alterou = await _alterarInformacoesUsuario(usuario, request);
 
-                _dbContext.TB001_USUARIO.Update(usuario);
-                await _dbContext.SaveChangesAsync();
+                await _registrarLogEdicao(Id);
 
-                var usuarioAlterado = await _dbContext.TB001_USUARIO.AsNoTracking().FirstOrDefaultAsync(x => x.NuUsuario == Id);
-                var log = new LogUsuarioDTO()
-                {
-                    Usuario = usuarioAlterado,
-                    TpOperacao = TipoOperacao.EDICAO
-                };
-
-                await _logService.CriarLogUsuario(log);
-
-                return true;
+                return alterou;
             }
             catch (DbUpdateException ex)
             {
@@ -121,8 +137,38 @@ namespace Application.Services
                 throw;
             }
         }
+
+        #region Métodos Privados - EditarUsuario
+        private async Task<bool> _alterarInformacoesUsuario(TB001_USUARIO usuario, UsuarioEditadoRequest request)
+        {
+            usuario.NoUsuario = request.NovoUsuario;
+            usuario.NoEmail = request.NovoEmail;
+            usuario.CoSenha = request.NovaSenha;
+
+            _dbContext.TB001_USUARIO.Update(usuario);
+            var resultado = await _dbContext.SaveChangesAsync();
+
+            if (resultado == 0)
+                return false;
+
+            return true;
+        }
+        private async Task _registrarLogEdicao(int Id)
+        {
+            var usuarioAlterado = await _dbContext.TB001_USUARIO.AsNoTracking().FirstOrDefaultAsync(x => x.NuUsuario == Id);
+            var log = new LogUsuarioDTO()
+            {
+                Usuario = usuarioAlterado,
+                TpOperacao = TipoOperacao.EDICAO
+            };
+
+            await _logService.CriarLogUsuario(log);
+        }
+        #endregion
+
         public async Task<bool> DeletarUsuario(int Id)
         {
+            bool deletou = false;
             try
             {
                 var usuario = await _dbContext.TB001_USUARIO.FirstOrDefaultAsync(x => x.NuUsuario == Id);
@@ -130,26 +176,42 @@ namespace Application.Services
                 if (usuario == null)
                     new ArgumentException("Usuário não encontrado.");
 
-                _dbContext.TB001_USUARIO.Remove(usuario);
-                var resultado = await _dbContext.SaveChangesAsync();
+                deletou = await _removerUsuarioBanco(usuario);
 
-                if (resultado == 0)
-                    return false;
+                deletou = await _registrarDelecaoLog(usuario);
 
-                var log = new LogUsuarioDTO()
-                {
-                    Usuario = usuario,
-                    TpOperacao = TipoOperacao.DELECAO
-                };
-                await _logService.CriarLogUsuario(log);
-
-                return true;
+                return deletou;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex, $"EditarUsuario: Erro {ex}");
                 return false;
             }
         }
+
+        #region Métodos Privados - DeletarUsuario
+        private async Task<bool> _removerUsuarioBanco(TB001_USUARIO usuario)
+        {
+            _dbContext.TB001_USUARIO.Remove(usuario);
+            var resultado = await _dbContext.SaveChangesAsync();
+
+            if (resultado == 0)
+                return false;
+
+            return true;
+        }
+        private async Task<bool> _registrarDelecaoLog(TB001_USUARIO usuario)
+        {
+            var log = new LogUsuarioDTO()
+            {
+                Usuario = usuario,
+                TpOperacao = TipoOperacao.DELECAO
+            };
+            bool registrou = await _logService.CriarLogUsuario(log);
+
+            return registrou;
+        }
+        #endregion
+
     }
 }
