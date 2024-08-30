@@ -81,6 +81,7 @@ namespace Infrastructure.Persistence
                 e.Property(p => p.NuFornecedor).HasColumnName("NU_FORNECEDOR");
                 e.Property(p => p.NuEmpresa).HasColumnName("NU_EMPRESA");
                 e.Property(p => p.NoFornecedor).HasColumnName("NO_FORNECEDOR");
+                e.Property(p => p.NoProdutoFornecedor).HasColumnName("NO_PRODUTO_FORNECEDOR");
                 e.Property(p => p.VrProdutoFornecedor).HasColumnName("VR_PRODUTO_FORNECEDOR");
                 e.Property(p => p.QtProdutoFornecedor).HasColumnName("QT_PRODUTO_FORNECEDOR");
 

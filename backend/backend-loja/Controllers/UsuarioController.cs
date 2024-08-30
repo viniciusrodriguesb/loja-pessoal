@@ -25,15 +25,15 @@ namespace WebApi.Controllers
             {
                 var result = await _usuarioService.CriarUsuario(request);
 
-                return StatusCode(200, result);
+                return StatusCode(StatusCodes.Status200OK, result);
             }
             catch (ArgumentException ex)
             {
-                return StatusCode(400, ex);
+                return StatusCode(StatusCodes.Status400BadRequest, ex);
             }
             catch (Exception)
             {
-                return StatusCode(500, "Erro de serviço");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Erro de serviço");
             }
         }
         [Authorize]
@@ -45,13 +45,13 @@ namespace WebApi.Controllers
                 var result = await _usuarioService.BuscarUsuarioId(id);
 
                 if (result == null)
-                    return StatusCode(204, "Usuario não encontrado.");
+                    return StatusCode(StatusCodes.Status204NoContent, "Usuario não encontrado.");
 
-                return StatusCode(200, result);
+                return StatusCode(StatusCodes.Status200OK, result);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Erro de serviço");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Erro de serviço");
             }
         }
         [Authorize]
@@ -62,11 +62,11 @@ namespace WebApi.Controllers
             {
                 var result = await _usuarioService.EditarUsuario(request, Id);
 
-                return StatusCode(200, result);
+                return StatusCode(StatusCodes.Status200OK, result);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Erro de serviço");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Erro de serviço");
             }
         }
         [Authorize]
@@ -77,11 +77,11 @@ namespace WebApi.Controllers
             {
                 var result = await _usuarioService.DeletarUsuario(Id);
 
-                return StatusCode(200, result);
+                return StatusCode(StatusCodes.Status200OK, result);
             }
             catch (Exception)
             {
-                return StatusCode(500, "Erro de serviço");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Erro de serviço");
             }
         }
     }

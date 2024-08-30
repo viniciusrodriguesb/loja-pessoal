@@ -5,7 +5,8 @@
         public int NuFornecedor {  get; set; }
         public int NuEmpresa { get; set; }
         public string NoFornecedor { get; set;}
-        public decimal VrProdutoFornecedor { get; set; }
+        public string NoProdutoFornecedor { get; set;}
+        public float VrProdutoFornecedor { get; set; }
         public int QtProdutoFornecedor { get; set; }
 
         #region Navigations
