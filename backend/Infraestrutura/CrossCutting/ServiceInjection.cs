@@ -11,6 +11,8 @@ namespace Infrastructure.CrossCutting
         {
             services.AddDbContext<DbContext>(options => options.UseNpgsql(configuration.GetConnectionString("SupabaseConnection")));
 
+            services.AddHttpClient();
+
             services.AddScoped<UsuarioService>();
             services.AddScoped<TokenService>();
             services.AddScoped<EmpresaService>();

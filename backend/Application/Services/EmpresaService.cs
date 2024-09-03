@@ -1,5 +1,4 @@
 ﻿using Application.Constantes.Enums;
-using Application.DTO;
 using Application.DTO.LogDTO;
 using Application.DTO.Request;
 using Application.DTO.Response;
@@ -10,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Application.Services
 {
-	public class EmpresaService
+    public class EmpresaService
 	{
 		private readonly DbContextBase _dbContext;
 		private readonly ILogger<EmpresaService> _logger;

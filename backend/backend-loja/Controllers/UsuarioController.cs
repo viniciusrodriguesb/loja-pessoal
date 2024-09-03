@@ -84,5 +84,6 @@ namespace WebApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Erro de serviço");
             }
         }
+       
     }
 }

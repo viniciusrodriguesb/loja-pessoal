@@ -1,4 +1,5 @@
-﻿using Application.Services;
+﻿using Application.DTO.Request;
+using Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
@@ -34,6 +35,20 @@ namespace WebApi.Controllers
                 Token = token
             };
 
+        }
+        [HttpPost("logar")]
+        public async Task<IActionResult> Logar([FromBody] LoginRequest login)
+        {
+            try
+            {
+                var result = await _usuarioService.Logar(login);
+
+                return StatusCode(StatusCodes.Status200OK, result);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Erro de serviço");
+            }
         }
     }
 }

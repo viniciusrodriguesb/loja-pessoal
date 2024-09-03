@@ -15,7 +15,9 @@ namespace Application.Services
         private readonly LogService _logService;
         private readonly ILogger<UsuarioService> _logger;
         private readonly DbContextBase _dbContext;
+        private readonly TokenService _tokenService;
         public UsuarioService(
+               TokenService tokenService,
                LogService logService,
                DbContextBase dbContext,
                ILogger<UsuarioService> logger)
@@ -23,8 +25,31 @@ namespace Application.Services
             _logService = logService;
             _dbContext = dbContext;
             _logger = logger;
+            _tokenService = tokenService;
         }
         #endregion
+
+        public async Task<bool> Logar(LoginRequest login)
+        {
+            try
+            {
+                var usuario = await _dbContext.TB001_USUARIO
+                                              .AsNoTracking()
+                                              .FirstOrDefaultAsync(x => x.NoUsuario == login.Usuario &&
+                                                                        x.CoSenha == login.Senha);
+
+                if (usuario == null)
+                    return false;
+
+                await _tokenService.InserirTokenHeader();
+
+                return true;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
         public async Task<bool> CriarUsuario(NovoUsuarioRequest request)
         {
