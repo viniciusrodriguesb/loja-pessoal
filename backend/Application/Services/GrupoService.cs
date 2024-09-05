@@ -6,6 +6,7 @@ using Domain.Entities;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Application.DTO.LogDTO;
 
 namespace Application.Services
 {
