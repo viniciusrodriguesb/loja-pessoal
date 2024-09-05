@@ -1,11 +1,13 @@
 ﻿using Application.DTO.Request;
 using Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
 {
 	[Route("api/[controller]/v1")]
 	[ApiController]
+	[Authorize]
 	public class EmpresaController : ControllerBase
 	{
 		private readonly EmpresaService _empresaService;

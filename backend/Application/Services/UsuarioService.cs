@@ -15,7 +15,9 @@ namespace Application.Services
         private readonly LogService _logService;
         private readonly ILogger<UsuarioService> _logger;
         private readonly DbContextBase _dbContext;
+        private readonly TokenService _tokenService;
         public UsuarioService(
+               TokenService tokenService,
                LogService logService,
                DbContextBase dbContext,
                ILogger<UsuarioService> logger)
@@ -23,8 +25,38 @@ namespace Application.Services
             _logService = logService;
             _dbContext = dbContext;
             _logger = logger;
+            _tokenService = tokenService;
         }
         #endregion
+
+        public async Task<string> Logar(LoginRequest login)
+        {
+            if (login == null || string.IsNullOrEmpty(login.Usuario) || string.IsNullOrEmpty(login.Senha))
+                throw new ArgumentNullException("LoginRequest", "Os dados de login são inválidos.");
+
+            try
+            {
+                var usuario = await _dbContext.TB001_USUARIO.AsNoTracking()
+                                                            .Where(x => x.NoUsuario == login.Usuario && x.CoSenha == login.Senha)
+                                                            .Select(x => x.NuUsuario)
+                                                            .AnyAsync();
+
+                if (usuario == false)
+                    throw new UnauthorizedAccessException("Usuário não encontrado.");
+
+                var token = _tokenService.GerarToken();
+
+                return token;
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                throw new Exception("Falha na autenticação: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Ocorreu um erro ao tentar logar: " + ex.Message);
+            }
+        }
 
         public async Task<bool> CriarUsuario(NovoUsuarioRequest request)
         {

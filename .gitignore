@@ -9,7 +9,18 @@
 *.user
 *.userosscache
 *.sln.docstates
-**/obj/
+
+backend\backend-loja/obj/
+backend\backend-loja/bin/
+
+backend/Domain/bin/
+backend/Domain/obj/
+
+backend/Application/bin/
+backend/Application/obj/
+
+backend/Infraestrutura/bin/
+backend/Infraestrutura/obj/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

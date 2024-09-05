@@ -1,8 +1,6 @@
 using Application;
 using Infrastructure.CrossCutting;
-using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -14,13 +12,12 @@ builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
 
-builder.Services.AddDbContext<DbContextBase>(options => options.UseInMemoryDatabase("bancoEmMemoria"));
-
 builder.Services.AddServices(builder.Configuration);
 
 // Adiciona controladores
 builder.Services.AddControllers();
 
+//Injeção do serviço de autenticação Bearer
 var key = Encoding.ASCII.GetBytes(Settings.Secret);
 builder.Services.AddAuthentication(x =>
 {
@@ -76,7 +73,6 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-
 }
 
 app.UseHttpsRedirection();

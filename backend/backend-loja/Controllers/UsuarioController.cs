@@ -36,7 +36,6 @@ namespace WebApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Erro de serviço");
             }
         }
-        [Authorize]
         [HttpGet("buscar/{id}")]
         public async Task<IActionResult> BuscarUsuario(int id)
         {
@@ -54,7 +53,6 @@ namespace WebApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Erro de serviço");
             }
         }
-        [Authorize]
         [HttpPut("editar")]
         public async Task<IActionResult> EditarUsuario([FromBody] UsuarioEditadoRequest request, [FromQuery] int Id)
         {
@@ -69,7 +67,6 @@ namespace WebApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Erro de serviço");
             }
         }
-        [Authorize]
         [HttpDelete("deletar")]
         public async Task<IActionResult> DeletarUsuario([FromBody] int Id)
         {
@@ -84,5 +81,6 @@ namespace WebApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Erro de serviço");
             }
         }
+
     }
 }

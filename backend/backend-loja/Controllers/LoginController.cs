@@ -1,4 +1,5 @@
-﻿using Application.Services;
+﻿using Application.DTO.Request;
+using Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
@@ -15,25 +16,25 @@ namespace WebApi.Controllers
         {
             _usuarioService = usuarioService;
             _tokenService = tokenService;
-        } 
+        }
         #endregion
 
-        [HttpPost("autenticar")]
-        public async Task<ActionResult<dynamic>> Authenticate([FromBody] int Id)
+        [HttpPost("logar")]
+        public async Task<IActionResult> Logar([FromBody] LoginRequest login)
         {
-            var usuario = await _usuarioService.BuscarUsuarioId(Id);
-
-            if (usuario == null) 
-                return NotFound();
-
-            var token = _tokenService.GerarToken();
-
-            return new
+            try
             {
-                User = usuario,
-                Token = token
-            };
+                var result = await _usuarioService.Logar(login);
 
+                if (result == null)
+                    return StatusCode(StatusCodes.Status401Unauthorized);
+
+                return StatusCode(StatusCodes.Status200OK, result);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Erro de serviço");
+            }
         }
     }
 }
