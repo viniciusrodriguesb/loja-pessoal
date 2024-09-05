@@ -29,25 +29,32 @@ namespace Application.Services
         }
         #endregion
 
-        public async Task<bool> Logar(LoginRequest login)
+        public async Task<string> Logar(LoginRequest login)
         {
+            if (login == null || string.IsNullOrEmpty(login.Usuario) || string.IsNullOrEmpty(login.Senha))
+                throw new ArgumentNullException("LoginRequest", "Os dados de login são inválidos.");
+
             try
             {
-                var usuario = await _dbContext.TB001_USUARIO
-                                              .AsNoTracking()
-                                              .FirstOrDefaultAsync(x => x.NoUsuario == login.Usuario &&
-                                                                        x.CoSenha == login.Senha);
+                var usuario = await _dbContext.TB001_USUARIO.AsNoTracking()
+                                                            .Where(x => x.NoUsuario == login.Usuario && x.CoSenha == login.Senha)
+                                                            .Select(x => x.NuUsuario)
+                                                            .AnyAsync();
 
-                if (usuario == null)
-                    return false;
+                if (usuario == false)
+                    throw new UnauthorizedAccessException("Usuário não encontrado.");
 
-                await _tokenService.InserirTokenHeader();
+                var token = _tokenService.GerarToken();
 
-                return true;
+                return token;
             }
-            catch (Exception)
+            catch (UnauthorizedAccessException ex)
             {
-                throw;
+                throw new Exception("Falha na autenticação: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Ocorreu um erro ao tentar logar: " + ex.Message);
             }
         }
 

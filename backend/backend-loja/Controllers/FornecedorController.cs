@@ -1,12 +1,13 @@
 ﻿using Application.DTO.Request;
 using Application.Services;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class FornecedorController : ControllerBase
     {
         #region Inicializadores e Construtor
@@ -14,7 +15,7 @@ namespace WebApi.Controllers
         public FornecedorController(FornecedorService fornecedorService)
         {
             _fornecedorService = fornecedorService;
-        } 
+        }
         #endregion
 
         [HttpPost("criar")]
