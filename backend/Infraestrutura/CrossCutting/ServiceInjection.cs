@@ -1,4 +1,5 @@
 ﻿using Application.Services;
+using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,7 +10,7 @@ namespace Infrastructure.CrossCutting
     {
         public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<DbContext>(options => options.UseNpgsql(configuration.GetConnectionString("SupabaseConnection")));
+            services.AddDbContext<DbContextBase>(options => options.UseNpgsql(configuration.GetConnectionString("SupabaseConnection")));
 
             services.AddHttpClient();
 
