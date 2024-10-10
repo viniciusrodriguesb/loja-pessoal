@@ -39,6 +39,11 @@ namespace WebApi.Controllers
 
                 return StatusCode(StatusCodes.Status200OK, result);
             }
+            catch (UnauthorizedAccessException ex)
+            {
+                _logger.Erro("Não autorizado", ex);
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
             catch (Exception ex)
             {
                 _logger.Erro("Logar", ex);

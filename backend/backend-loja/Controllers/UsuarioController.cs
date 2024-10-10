@@ -1,6 +1,7 @@
 ﻿using Application.DTO.Request;
 using Application.Logger;
 using Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
@@ -66,6 +67,7 @@ namespace WebApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Erro de serviço");
             }
         }
+        [Authorize]
         [HttpPut("editar")]
         public async Task<IActionResult> EditarUsuario([FromBody] UsuarioEditadoRequest request, [FromQuery] int Id)
         {
@@ -85,6 +87,7 @@ namespace WebApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Erro de serviço");
             }
         }
+        [Authorize]
         [HttpDelete("deletar")]
         public async Task<IActionResult> DeletarUsuario([FromBody] int Id)
         {

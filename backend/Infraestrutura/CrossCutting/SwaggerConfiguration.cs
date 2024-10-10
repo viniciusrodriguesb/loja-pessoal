@@ -30,7 +30,7 @@ namespace Infrastructure.CrossCutting
                                 Id = "Bearer"
                             }
                         },
-                        new string[] { }
+                        Array.Empty<string>()
                     }
                 });
             });

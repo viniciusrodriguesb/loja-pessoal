@@ -42,19 +42,19 @@ namespace Application.Services
 
                 var senhaValida = BCrypt.Net.BCrypt.Verify(login.Senha, usuario.CoSenha);
 
-                if(!senhaValida)
+                if (!senhaValida)
                     throw new UnauthorizedAccessException("Senha inválida, tente novamente.");
 
                 if (usuario == null)
                     throw new UnauthorizedAccessException("Usuário não encontrado.");
 
-                var token = _tokenService.GerarToken();
+                var token = TokenService.GerarToken();
 
                 return token;
             }
             catch (UnauthorizedAccessException ex)
             {
-                throw new Exception("Falha na autenticação: " + ex.Message);
+                throw new UnauthorizedAccessException("Falha na autenticação: " + ex.Message);
             }
             catch (Exception ex)
             {
@@ -158,8 +158,6 @@ namespace Application.Services
                     return alterou;
                 }
 
-                request.NovaSenha = BCrypt.Net.BCrypt.HashPassword(request.NovaSenha);
-
                 alterou = await _alterarInformacoesUsuario(usuario, request);
 
                 await _registrarLogEdicao(Id);
@@ -181,9 +179,17 @@ namespace Application.Services
         #region Métodos Privados - EditarUsuario
         private async Task<bool> _alterarInformacoesUsuario(TB001_USUARIO usuario, UsuarioEditadoRequest request)
         {
-            usuario.NoUsuario = request.NovoUsuario;
-            usuario.NoEmail = request.NovoEmail;
-            usuario.CoSenha = request.NovaSenha;
+            if (!string.IsNullOrWhiteSpace(request.NovoUsuario))
+                usuario.NoUsuario = request.NovoUsuario;
+
+            if (!string.IsNullOrWhiteSpace(request.NovoEmail))
+                usuario.NoEmail = request.NovoEmail;
+
+            if (!string.IsNullOrWhiteSpace(request.NovaSenha))
+            {
+                request.NovaSenha = BCrypt.Net.BCrypt.HashPassword(request.NovaSenha);
+                usuario.CoSenha = request.NovaSenha;
+            }
 
             _dbContext.TB001_USUARIO.Update(usuario);
             var resultado = await _dbContext.SaveChangesAsync();
