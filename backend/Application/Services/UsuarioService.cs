@@ -158,6 +158,8 @@ namespace Application.Services
                     return alterou;
                 }
 
+                request.NovaSenha = BCrypt.Net.BCrypt.HashPassword(request.NovaSenha);
+
                 alterou = await _alterarInformacoesUsuario(usuario, request);
 
                 await _registrarLogEdicao(Id);
