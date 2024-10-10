@@ -1,9 +1,4 @@
-using Application;
 using Infrastructure.CrossCutting;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,59 +7,22 @@ builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
 
+builder.Services.AddHttpContextAccessor();
+
+//Add Cache
+builder.Services.AddMemoryCache();
+
+//Add Services
 builder.Services.AddServices(builder.Configuration);
 
-// Adiciona controladores
+//Add controladores
 builder.Services.AddControllers();
 
-//Injeção do serviço de autenticação Bearer
-var key = Encoding.ASCII.GetBytes(Settings.Secret);
-builder.Services.AddAuthentication(x =>
-{
-    x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-    .AddJwtBearer(x =>
-    {
-        x.RequireHttpsMetadata = false;
-        x.SaveToken = true;
-        x.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(key),
-            ValidateIssuer = false,
-            ValidateAudience = false,
-        };
-    });
+//Add Autenticação
+builder.Services.AddServiceAuthentication();
 
-// Adiciona a documentação de API com o Swagger
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        In = ParameterLocation.Header,
-        Description = "Please insert token",
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        BearerFormat = "JWT",
-        Scheme = "bearer"
-    });
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-        {
-            Reference = new OpenApiReference
-            {
-                Type = ReferenceType.SecurityScheme,
-                Id = "Bearer"
-            }
-        },
-        new string[]{}
-        }
-    });
-});
+//Add Swagger
+builder.Services.AddSwaggerConfiguration();
 
 var app = builder.Build();
 

@@ -27,10 +27,12 @@ namespace Infrastructure.Persistence
         public DbSet<TB508_LOG_MOVIMENTACAO> TB508_LOG_MOVIMENTACAO { get; set; }
         #endregion
 
+        #region Mapeamento
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
+            #region Tabelas Principais
             modelBuilder.ApplyConfiguration(new TB001Map());
             modelBuilder.ApplyConfiguration(new TB002Map());
             modelBuilder.ApplyConfiguration(new TB003Map());
@@ -39,6 +41,7 @@ namespace Infrastructure.Persistence
             modelBuilder.ApplyConfiguration(new TB006Map());
             modelBuilder.ApplyConfiguration(new TB007Map());
             modelBuilder.ApplyConfiguration(new TB008Map());
+            #endregion
 
             #region Tabelas de Log
 
@@ -52,6 +55,7 @@ namespace Infrastructure.Persistence
             modelBuilder.ApplyConfiguration(new TB508Map());
 
             #endregion
-        }
+        } 
+        #endregion
     }
 }

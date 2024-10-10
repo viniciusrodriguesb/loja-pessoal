@@ -37,11 +37,15 @@ namespace Application.Services
             try
             {
                 var usuario = await _dbContext.TB001_USUARIO.AsNoTracking()
-                                                            .Where(x => x.NoUsuario == login.Usuario && x.CoSenha == login.Senha)
-                                                            .Select(x => x.NuUsuario)
-                                                            .AnyAsync();
+                                                            .Where(x => x.NoUsuario == login.Usuario)
+                                                            .FirstOrDefaultAsync();
 
-                if (usuario == false)
+                var senhaValida = BCrypt.Net.BCrypt.Verify(login.Senha, usuario.CoSenha);
+
+                if(!senhaValida)
+                    throw new UnauthorizedAccessException("Senha inválida, tente novamente.");
+
+                if (usuario == null)
                     throw new UnauthorizedAccessException("Usuário não encontrado.");
 
                 var token = _tokenService.GerarToken();
@@ -54,7 +58,7 @@ namespace Application.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Ocorreu um erro ao tentar logar: " + ex.Message);
+                throw new Exception("Ocorreu um erro: " + ex.Message);
             }
         }
 
@@ -66,6 +70,8 @@ namespace Application.Services
                 new ArgumentException("Dados da requisição vazios, preencha novamente.");
 
             var query = _dbContext.TB001_USUARIO.AsNoTracking().AsQueryable();
+
+            request.Senha = BCrypt.Net.BCrypt.HashPassword(request.Senha);
 
             await _verificarExistenciaUsuario(request, query);
 
