@@ -2,6 +2,7 @@
 using Application.Logger;
 using Application.Services;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace WebApi.Controllers
 {
@@ -23,6 +24,7 @@ namespace WebApi.Controllers
         }
         #endregion
 
+        [SwaggerOperation(Description = "Endpoint de login com retorno do token de serviço.")]
         [HttpPost("logar")]
         public async Task<IActionResult> Logar([FromBody] LoginRequest login)
         {

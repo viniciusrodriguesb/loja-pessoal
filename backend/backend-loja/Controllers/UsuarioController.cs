@@ -3,6 +3,7 @@ using Application.Logger;
 using Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace WebApi.Controllers
 {
@@ -21,6 +22,7 @@ namespace WebApi.Controllers
         }
         #endregion
 
+        [SwaggerOperation(Description = "Endpoint de criação de um novo usuário")]
         [HttpPost("criar")]
         public async Task<IActionResult> CriarUsuario(NovoUsuarioRequest request)
         {
@@ -45,6 +47,7 @@ namespace WebApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Erro de serviço");
             }
         }
+        [SwaggerOperation(Description = "Endpoint de busca de usuário específico")]
         [HttpGet("buscar/{id}")]
         public async Task<IActionResult> BuscarUsuario(int id)
         {
@@ -68,6 +71,7 @@ namespace WebApi.Controllers
             }
         }
         [Authorize]
+        [SwaggerOperation(Description = "Endpoint de edição de usuário específico")]
         [HttpPut("editar")]
         public async Task<IActionResult> EditarUsuario([FromBody] UsuarioEditadoRequest request, [FromQuery] int Id)
         {
@@ -88,6 +92,7 @@ namespace WebApi.Controllers
             }
         }
         [Authorize]
+        [SwaggerOperation(Description = "Endpoint de deleção de usuário específico")]
         [HttpDelete("deletar")]
         public async Task<IActionResult> DeletarUsuario([FromBody] int Id)
         {
