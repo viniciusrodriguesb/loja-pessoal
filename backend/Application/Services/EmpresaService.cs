@@ -10,134 +10,136 @@ using Microsoft.Extensions.Logging;
 namespace Application.Services
 {
     public class EmpresaService
-	{
-		private readonly DbContextBase _dbContext;
-		private readonly ILogger<EmpresaService> _logger;
-		private readonly LogService _logService;
+    {
 
-		public EmpresaService(DbContextBase dbContext, ILogger<EmpresaService> logger, LogService logService)
-		{
-			_dbContext = dbContext;
-			_logger = logger;
-			_logService = logService;
-		}
+        #region Constructor
+        private readonly DbContextBase _dbContext;
+        private readonly ILogger<EmpresaService> _logger;
+        private readonly LogService _logService;
+        public EmpresaService(DbContextBase dbContext, ILogger<EmpresaService> logger, LogService logService)
+        {
+            _dbContext = dbContext;
+            _logger = logger;
+            _logService = logService;
+        } 
+        #endregion
 
-		public async Task<bool> CriarEmpresa(NovaEmpresaRequest request)
-		{
-			if (request == null)
-				new ArgumentException("Dados da requisição vazios, preencha novamente.");
+        public async Task<bool> CriarEmpresa(NovaEmpresaRequest request)
+        {
+            if (request == null)
+                new ArgumentException("Dados da requisição vazios, preencha novamente.");
 
-			var novaEmpresa = new TB002_EMPRESA()
-			{
-				NoEmpresa = request.NoEmpresa,
-				CoCnpj = request.CoCnpj
-			};
+            var novaEmpresa = new TB002_EMPRESA()
+            {
+                NoEmpresa = request.NoEmpresa,
+                CoCnpj = request.CoCnpj
+            };
 
-			await _dbContext.TB002_EMPRESA.AddAsync(novaEmpresa);
+            await _dbContext.TB002_EMPRESA.AddAsync(novaEmpresa);
 
-			var resultado = await _dbContext.SaveChangesAsync();
+            var resultado = await _dbContext.SaveChangesAsync();
 
-			if(resultado == 0)
-				return false;
+            if (resultado == 0)
+                return false;
 
-			var empresaCriada = await _dbContext.TB002_EMPRESA.FirstOrDefaultAsync(empresa => empresa.CoCnpj == request.CoCnpj);
+            var empresaCriada = await _dbContext.TB002_EMPRESA.FirstOrDefaultAsync(empresa => empresa.CoCnpj == request.CoCnpj);
 
-			var log = new LogEmpresaDTO()
-			{
-				Empresa = empresaCriada,
-				TpOperacao = TipoOperacao.INSERCAO
-			};
+            var log = new LogEmpresaDTO()
+            {
+                Empresa = empresaCriada,
+                TpOperacao = TipoOperacao.INSERCAO
+            };
 
-			await _logService.CriarLogEmpresa(log);
+            await _logService.CriarLogEmpresa(log);
 
-			return true;
-		}
+            return true;
+        }
 
-		public async Task<bool> EditarEmpresa(NovaEmpresaRequest request, int nuEmpresa)
-		{
-			try
-			{
-				var empresa = await _dbContext.TB002_EMPRESA.FirstOrDefaultAsync(empresa => empresa.NuEmpresa == nuEmpresa);
+        public async Task<bool> EditarEmpresa(NovaEmpresaRequest request, int nuEmpresa)
+        {
+            try
+            {
+                var empresa = await _dbContext.TB002_EMPRESA.FirstOrDefaultAsync(empresa => empresa.NuEmpresa == nuEmpresa);
 
-				if (empresa == null)
-				{
-					_logger.LogInformation("EditarEmpresa: Empresa não encontrada");
-					return false;
-				}
+                if (empresa == null)
+                {
+                    _logger.LogInformation("EditarEmpresa: Empresa não encontrada");
+                    return false;
+                }
 
-				empresa.CoCnpj = request.CoCnpj;
-				empresa.NoEmpresa = request.NoEmpresa;
+                empresa.CoCnpj = request.CoCnpj;
+                empresa.NoEmpresa = request.NoEmpresa;
 
-				_dbContext.TB002_EMPRESA.Update(empresa);
-				await _dbContext.SaveChangesAsync();
+                _dbContext.TB002_EMPRESA.Update(empresa);
+                await _dbContext.SaveChangesAsync();
 
-				var log = new LogEmpresaDTO()
-				{
-					Empresa = empresa,
-					TpOperacao = TipoOperacao.EDICAO
-				};
+                var log = new LogEmpresaDTO()
+                {
+                    Empresa = empresa,
+                    TpOperacao = TipoOperacao.EDICAO
+                };
 
-				await _logService.CriarLogEmpresa(log);
+                await _logService.CriarLogEmpresa(log);
 
-				return true;
-			}
-			catch (DbUpdateException ex)
-			{
-				_logger.LogError(ex, $"EditarEmpresa: Erro ao atualizar a entidade: {ex}");
-				throw;
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError(ex, $"EditarEmpresa: Erro {ex}");
-				throw;
-			}
-		}
+                return true;
+            }
+            catch (DbUpdateException ex)
+            {
+                _logger.LogError(ex, $"EditarEmpresa: Erro ao atualizar a entidade: {ex}");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"EditarEmpresa: Erro {ex}");
+                throw;
+            }
+        }
 
-		public async Task<EmpresaResponse> BuscarEmpresa(int nuEmpresa)
-		{
-			var empresa = await _dbContext.TB002_EMPRESA
-										  .AsNoTracking()
-										  .Where(empresa => empresa.NuEmpresa == nuEmpresa)
-										  .Select(empresa => new EmpresaResponse()
-										  {
-											  NuEmpresa = empresa.NuEmpresa,
-											  NoEmpresa = empresa.NoEmpresa,
-											  CoCnpj = empresa.CoCnpj
-										  })
-										  .FirstOrDefaultAsync();
+        public async Task<EmpresaResponse> BuscarEmpresa(int nuEmpresa)
+        {
+            var empresa = await _dbContext.TB002_EMPRESA
+                                          .AsNoTracking()
+                                          .Where(empresa => empresa.NuEmpresa == nuEmpresa)
+                                          .Select(empresa => new EmpresaResponse()
+                                          {
+                                              NuEmpresa = empresa.NuEmpresa,
+                                              NoEmpresa = empresa.NoEmpresa,
+                                              CoCnpj = empresa.CoCnpj
+                                          })
+                                          .FirstOrDefaultAsync();
 
-			if (empresa == null)
-				return null;
+            if (empresa == null)
+                return null;
 
-			return empresa;
-		}
+            return empresa;
+        }
 
-		public async Task<bool> DeletarEmpresa(int nuEmpresa)
-		{
-			var empresaParaDeletar = _dbContext.TB002_EMPRESA.FirstOrDefault(empresa => empresa.NuEmpresa == nuEmpresa);
+        public async Task<bool> DeletarEmpresa(int nuEmpresa)
+        {
+            var empresaParaDeletar = _dbContext.TB002_EMPRESA.FirstOrDefault(empresa => empresa.NuEmpresa == nuEmpresa);
 
-			if (empresaParaDeletar == null)
-			{
-				_logger.LogInformation("DeletarEmpresa: Empresa não encontrada");
-				return false;
-			}
+            if (empresaParaDeletar == null)
+            {
+                _logger.LogInformation("DeletarEmpresa: Empresa não encontrada");
+                return false;
+            }
 
-			_dbContext.TB002_EMPRESA.Remove(empresaParaDeletar);
+            _dbContext.TB002_EMPRESA.Remove(empresaParaDeletar);
 
-			var resultado = await _dbContext.SaveChangesAsync();
+            var resultado = await _dbContext.SaveChangesAsync();
 
-			if (resultado == 0)
-				return false;
+            if (resultado == 0)
+                return false;
 
-			var log = new LogEmpresaDTO()
-			{
-				Empresa = empresaParaDeletar,
-				TpOperacao = TipoOperacao.DELECAO
-			};
+            var log = new LogEmpresaDTO()
+            {
+                Empresa = empresaParaDeletar,
+                TpOperacao = TipoOperacao.DELECAO
+            };
 
-			await _logService.CriarLogEmpresa(log);
+            await _logService.CriarLogEmpresa(log);
 
-			return true;
-		}
-	}
+            return true;
+        }
+    }
 }
