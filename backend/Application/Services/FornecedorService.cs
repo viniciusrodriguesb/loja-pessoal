@@ -1,7 +1,7 @@
 ﻿using Application.DTO.Request;
 using Application.DTO.Response;
+using Domain;
 using Domain.Entities;
-using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Services

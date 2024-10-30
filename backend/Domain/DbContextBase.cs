@@ -1,12 +1,11 @@
 ﻿using Domain.Entities;
-using Domain.Mappings;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Persistence
+namespace Domain
 {
     public class DbContextBase : DbContext
     {
-        public DbContextBase(DbContextOptions options) : base(options) { }
+        public DbContextBase(DbContextOptions<DbContextBase> options) : base(options) { }
 
         #region Modelos       
         public DbSet<TB001_USUARIO> TB001_USUARIO { get; set; }
@@ -30,32 +29,9 @@ namespace Infrastructure.Persistence
         #region Mapeamento
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
-
-            #region Tabelas Principais
-            modelBuilder.ApplyConfiguration(new TB001Map());
-            modelBuilder.ApplyConfiguration(new TB002Map());
-            modelBuilder.ApplyConfiguration(new TB003Map());
-            modelBuilder.ApplyConfiguration(new TB004Map());
-            modelBuilder.ApplyConfiguration(new TB005Map());
-            modelBuilder.ApplyConfiguration(new TB006Map());
-            modelBuilder.ApplyConfiguration(new TB007Map());
-            modelBuilder.ApplyConfiguration(new TB008Map());
-            #endregion
-
-            #region Tabelas de Log
-
-            modelBuilder.ApplyConfiguration(new TB501Map());
-            modelBuilder.ApplyConfiguration(new TB502Map());
-            modelBuilder.ApplyConfiguration(new TB503Map());
-            modelBuilder.ApplyConfiguration(new TB504Map());
-            modelBuilder.ApplyConfiguration(new TB505Map());
-            modelBuilder.ApplyConfiguration(new TB506Map());
-            modelBuilder.ApplyConfiguration(new TB507Map());
-            modelBuilder.ApplyConfiguration(new TB508Map());
-
-            #endregion
-        } 
+            modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AI");
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(DbContextBase).Assembly);
+        }
         #endregion
     }
 }

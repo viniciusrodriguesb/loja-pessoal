@@ -1,6 +1,6 @@
 ﻿using Application.DTO.LogDTO;
+using Domain;
 using Domain.Entities;
-using Infrastructure.Persistence;
 using Microsoft.Extensions.Logging;
 
 namespace Application.Services

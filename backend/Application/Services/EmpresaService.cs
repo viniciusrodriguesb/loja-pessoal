@@ -2,8 +2,8 @@
 using Application.DTO.LogDTO;
 using Application.DTO.Request;
 using Application.DTO.Response;
+using Domain;
 using Domain.Entities;
-using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
