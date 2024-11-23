@@ -1,10 +1,8 @@
 ﻿using Application.Constantes.Enums;
-using Application.DTO.LogDTO;
 using Application.DTO.Request;
 using Application.DTO.Response;
-using Domain;
 using Domain.Entities;
-using Microsoft.EntityFrameworkCore;
+using Domain.Repositories.Interfaces;
 using Microsoft.Extensions.Logging;
 
 namespace Application.Services
@@ -13,21 +11,23 @@ namespace Application.Services
     {
 
         #region Constructor
-        private readonly DbContextBase _dbContext;
         private readonly ILogger<EmpresaService> _logger;
-        private readonly LogService _logService;
-        public EmpresaService(DbContextBase dbContext, ILogger<EmpresaService> logger, LogService logService)
+        private readonly ILogEmpresaRepository _logEmpresaRepository;
+        private readonly IEmpresaRepository _empresaRepository;
+        public EmpresaService(IEmpresaRepository empresaRepository,
+                              ILogger<EmpresaService> logger,
+                              ILogEmpresaRepository logEmpresaRepository)
         {
-            _dbContext = dbContext;
+            _empresaRepository = empresaRepository;
+            _logEmpresaRepository = logEmpresaRepository;
             _logger = logger;
-            _logService = logService;
-        } 
+        }
         #endregion
 
-        public async Task<bool> CriarEmpresa(NovaEmpresaRequest request)
+        public async Task CriarEmpresa(NovaEmpresaRequest request)
         {
             if (request == null)
-                new ArgumentException("Dados da requisição vazios, preencha novamente.");
+                throw new ArgumentException("Dados da requisição vazios, preencha novamente.");
 
             var novaEmpresa = new TB002_EMPRESA()
             {
@@ -35,111 +35,59 @@ namespace Application.Services
                 CoCnpj = request.CoCnpj
             };
 
-            await _dbContext.TB002_EMPRESA.AddAsync(novaEmpresa);
+            await _empresaRepository.Adicionar(novaEmpresa);
 
-            var resultado = await _dbContext.SaveChangesAsync();
+            var empresaCriada = await _empresaRepository.BuscarEmpresaCnpj(request.CoCnpj);
 
-            if (resultado == 0)
-                return false;
+            await _logEmpresaRepository.GerarLog(empresaCriada, (short)TipoOperacao.INSERCAO);
 
-            var empresaCriada = await _dbContext.TB002_EMPRESA.FirstOrDefaultAsync(empresa => empresa.CoCnpj == request.CoCnpj);
-
-            var log = new LogEmpresaDTO()
-            {
-                Empresa = empresaCriada,
-                TpOperacao = TipoOperacao.INSERCAO
-            };
-
-            await _logService.CriarLogEmpresa(log);
-
-            return true;
         }
-
-        public async Task<bool> EditarEmpresa(NovaEmpresaRequest request, int nuEmpresa)
+        public async Task EditarEmpresa(NovaEmpresaRequest request, int NuEmpresa)
         {
             try
             {
-                var empresa = await _dbContext.TB002_EMPRESA.FirstOrDefaultAsync(empresa => empresa.NuEmpresa == nuEmpresa);
+                var empresa = await _empresaRepository.BuscarEmpresaId(NuEmpresa);
 
                 if (empresa == null)
-                {
-                    _logger.LogInformation("EditarEmpresa: Empresa não encontrada");
-                    return false;
-                }
+                    throw new ArgumentException("Empresa não encontrada");
 
                 empresa.CoCnpj = request.CoCnpj;
                 empresa.NoEmpresa = request.NoEmpresa;
 
-                _dbContext.TB002_EMPRESA.Update(empresa);
-                await _dbContext.SaveChangesAsync();
+                await _empresaRepository.Atualizar(empresa);
 
-                var log = new LogEmpresaDTO()
-                {
-                    Empresa = empresa,
-                    TpOperacao = TipoOperacao.EDICAO
-                };
+                await _logEmpresaRepository.GerarLog(empresa, (short)TipoOperacao.EDICAO);
 
-                await _logService.CriarLogEmpresa(log);
-
-                return true;
-            }
-            catch (DbUpdateException ex)
-            {
-                _logger.LogError(ex, $"EditarEmpresa: Erro ao atualizar a entidade: {ex}");
-                throw;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"EditarEmpresa: Erro {ex}");
+                _logger.LogError(ex, $"EditarEmpresa: Erro {ex.Message}");
                 throw;
             }
         }
-
-        public async Task<EmpresaResponse> BuscarEmpresa(int nuEmpresa)
+        public async Task<EmpresaResponse> BuscarEmpresa(int NuEmpresa)
         {
-            var empresa = await _dbContext.TB002_EMPRESA
-                                          .AsNoTracking()
-                                          .Where(empresa => empresa.NuEmpresa == nuEmpresa)
-                                          .Select(empresa => new EmpresaResponse()
-                                          {
-                                              NuEmpresa = empresa.NuEmpresa,
-                                              NoEmpresa = empresa.NoEmpresa,
-                                              CoCnpj = empresa.CoCnpj
-                                          })
-                                          .FirstOrDefaultAsync();
+            var empresa = await _empresaRepository.BuscarEmpresaId(NuEmpresa);
 
-            if (empresa == null)
-                return null;
-
-            return empresa;
-        }
-
-        public async Task<bool> DeletarEmpresa(int nuEmpresa)
-        {
-            var empresaParaDeletar = _dbContext.TB002_EMPRESA.FirstOrDefault(empresa => empresa.NuEmpresa == nuEmpresa);
-
-            if (empresaParaDeletar == null)
+            var response = new EmpresaResponse()
             {
-                _logger.LogInformation("DeletarEmpresa: Empresa não encontrada");
-                return false;
-            }
-
-            _dbContext.TB002_EMPRESA.Remove(empresaParaDeletar);
-
-            var resultado = await _dbContext.SaveChangesAsync();
-
-            if (resultado == 0)
-                return false;
-
-            var log = new LogEmpresaDTO()
-            {
-                Empresa = empresaParaDeletar,
-                TpOperacao = TipoOperacao.DELECAO
+                NuEmpresa = empresa.NuEmpresa,
+                NoEmpresa = empresa.NoEmpresa,
+                CoCnpj = empresa.CoCnpj
             };
 
-            await _logService.CriarLogEmpresa(log);
+            return response;
+        }
+        public async Task DeletarEmpresa(int NuEmpresa)
+        {
+            var empresaParaDeletar = await _empresaRepository.BuscarEmpresaId(NuEmpresa);
 
-            return true;
+            if (empresaParaDeletar == null)
+                throw new ArgumentException("Empresa não encontrada");
+
+            await _empresaRepository.Remover(empresaParaDeletar);
+
+            await _logEmpresaRepository.GerarLog(empresaParaDeletar, (short)TipoOperacao.EDICAO);
         }
     }
 }

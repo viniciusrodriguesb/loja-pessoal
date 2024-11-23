@@ -30,13 +30,13 @@ namespace Infrastructure.CrossCutting
             services.AddScoped<UsuarioService>();
             services.AddScoped<TokenService>();
             services.AddScoped<EmpresaService>();
-            services.AddScoped<LogService>();
             services.AddScoped<FornecedorService>();
         }
         private static void ConfigurarRepositorios(IServiceCollection services)
         {
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();
             services.AddScoped<ILogUsuarioRepository, LogUsuarioRepository>();
+            services.AddScoped<ILogEmpresaRepository, LogEmpresaRepository>();
         }
     }
 }

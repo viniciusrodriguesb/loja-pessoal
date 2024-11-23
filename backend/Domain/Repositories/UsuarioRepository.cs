@@ -20,9 +20,7 @@ namespace Domain.Repositories
         }
         public async Task<TB001_USUARIO?> BuscarUsuarioId(int id)
         {            
-            return await _dbContext.TB001_USUARIO
-                                   .AsNoTracking()
-                                   .FirstOrDefaultAsync(x => x.NuUsuario == id);
+            return await _dbContext.TB001_USUARIO.FirstOrDefaultAsync(x => x.NuUsuario == id);
         }
         public async Task CriarUsuario(string Usuario, string Email, string Senha)
         {

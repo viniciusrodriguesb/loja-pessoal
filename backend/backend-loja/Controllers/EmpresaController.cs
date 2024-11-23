@@ -23,9 +23,13 @@ namespace WebApi.Controllers
         {
             try
             {
-                var resultado = await _empresaService.CriarEmpresa(request);
+                await _empresaService.CriarEmpresa(request);
 
-                return StatusCode(StatusCodes.Status200OK, resultado);
+                return StatusCode(StatusCodes.Status200OK);
+            }
+            catch (ArgumentException e)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, e.Message);
             }
             catch (Exception e)
             {
@@ -54,9 +58,13 @@ namespace WebApi.Controllers
         {
             try
             {
-                var resultado = await _empresaService.EditarEmpresa(request, nuEmpresa);
+                await _empresaService.EditarEmpresa(request, nuEmpresa);
 
-                return StatusCode(StatusCodes.Status200OK, resultado);
+                return StatusCode(StatusCodes.Status200OK);
+            }
+            catch (ArgumentException e)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, e.Message);
             }
             catch (Exception e)
             {
@@ -68,9 +76,13 @@ namespace WebApi.Controllers
         {
             try
             {
-                var resultado = await _empresaService.DeletarEmpresa(nuEmpresa);
+                await _empresaService.DeletarEmpresa(nuEmpresa);
 
-                return StatusCode(StatusCodes.Status200OK, resultado);
+                return StatusCode(StatusCodes.Status200OK);
+            }
+            catch (ArgumentException e)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, e.Message);
             }
             catch (Exception e)
             {
