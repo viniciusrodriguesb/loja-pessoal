@@ -10,11 +10,9 @@ namespace Application.Services
     {
         #region Inicializadores e Construtor
         private readonly DbContextBase _dbContext;
-        private readonly LogService _logService;
-        public FornecedorService(DbContextBase dbContext, LogService logService)
+        public FornecedorService(DbContextBase dbContext)
         {
             _dbContext = dbContext;
-            _logService = logService;
         }
         #endregion
 
@@ -27,7 +25,7 @@ namespace Application.Services
 
             var novoProdutoFornecedor = new TB004_FORNECEDOR()
             {
-                NoFornecedor = request.NoFornecedor,
+                NoFornecedor = request!.NoFornecedor,
                 NoProdutoFornecedor = request.NoProdutoFornecedor,
                 QtProdutoFornecedor = request.QtProdutoFornecedor,
                 VrProdutoFornecedor = request.VrProdutoFornecedor,
@@ -65,13 +63,13 @@ namespace Application.Services
         }
         #endregion
 
-        public async Task<FornecedorResponse> BuscarFornecedorPorId(int NuFornecedor)
+        public async Task<FornecedorResponse?> BuscarFornecedorPorId(int NuFornecedor)
         {
             return await _consultarFornecedor(NuFornecedor);
         }
 
         #region Métodos Privados - BuscarFornecedorPorId
-        private async Task<FornecedorResponse> _consultarFornecedor(int NuFornecedor)
+        private async Task<FornecedorResponse?> _consultarFornecedor(int NuFornecedor)
         {
             return await _dbContext.TB004_FORNECEDOR.AsNoTracking()
                                                     .Where(x => x.NuFornecedor == NuFornecedor)
