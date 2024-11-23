@@ -19,7 +19,7 @@ builder.Services.AddServices(builder.Configuration);
 builder.Services.AddControllers();
 
 //Add Autenticação
-builder.Services.AddServiceAuthentication();
+builder.Services.AddServiceAuthentication(builder.Configuration);
 
 //Add Swagger
 builder.Services.AddSwaggerConfiguration();

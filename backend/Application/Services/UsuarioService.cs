@@ -14,14 +14,17 @@ namespace Application.Services
         private readonly ILogger<UsuarioService> _logger;
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly ILogUsuarioRepository _logUsuarioRepository;
+        private readonly TokenService _tokenService;
         public UsuarioService(
                IUsuarioRepository usuarioRepository,
                ILogUsuarioRepository logUsuarioRepository,
-               ILogger<UsuarioService> logger)
+               ILogger<UsuarioService> logger,
+               TokenService tokenService)
         {
             _logUsuarioRepository = logUsuarioRepository;
             _usuarioRepository = usuarioRepository;
             _logger = logger;
+            _tokenService = tokenService;
         }
         #endregion
 
@@ -39,7 +42,7 @@ namespace Application.Services
                 if (!senhaValida || usuario == null)
                     throw new UnauthorizedAccessException("Acesso negado, tente novamente.");
 
-                var token = TokenService.GerarToken();
+                var token = _tokenService.GerarToken();
 
                 return token;
             }
