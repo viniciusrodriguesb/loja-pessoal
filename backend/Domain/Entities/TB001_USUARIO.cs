@@ -1,6 +1,8 @@
-﻿namespace Domain.Entities
+﻿using Domain.Repositories.Interfaces;
+
+namespace Domain.Entities
 {
-    public class TB001_USUARIO
+    public partial class TB001_USUARIO
     {
         public int NuUsuario { get; set; }
         public short IcUsuario { get; set; }

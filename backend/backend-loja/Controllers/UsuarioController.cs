@@ -30,11 +30,11 @@ namespace WebApi.Controllers
             {
                 _logger.Iniciando("CriarUsuario");
 
-                var result = await _usuarioService.CriarUsuario(request);
+                await _usuarioService.CriarUsuario(request);
 
                 _logger.Finalizado("CriarUsuario");
 
-                return StatusCode(StatusCodes.Status200OK, result);
+                return StatusCode(StatusCodes.Status200OK);
             }
             catch (ArgumentException ex)
             {
@@ -79,11 +79,11 @@ namespace WebApi.Controllers
             {
                 _logger.Iniciando("EditarUsuario");
 
-                var result = await _usuarioService.EditarUsuario(request, Id);
+                await _usuarioService.EditarUsuario(request, Id);
 
                 _logger.Finalizado("EditarUsuario");
 
-                return StatusCode(StatusCodes.Status200OK, result);
+                return StatusCode(StatusCodes.Status200OK);
             }
             catch (Exception ex)
             {
@@ -100,11 +100,11 @@ namespace WebApi.Controllers
             {
                 _logger.Iniciando("DeletarUsuario");
 
-                var result = await _usuarioService.DeletarUsuario(Id);
+                await _usuarioService.DeletarUsuario(Id);
 
                 _logger.Finalizado("DeletarUsuario");
 
-                return StatusCode(StatusCodes.Status200OK, result);
+                return StatusCode(StatusCodes.Status200OK);
             }
             catch (Exception ex)
             {
