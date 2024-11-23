@@ -37,6 +37,7 @@ namespace Infrastructure.CrossCutting
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();
             services.AddScoped<ILogUsuarioRepository, LogUsuarioRepository>();
             services.AddScoped<ILogEmpresaRepository, LogEmpresaRepository>();
+            services.AddScoped<IEmpresaRepository, EmpresaRepository>();
         }
     }
 }

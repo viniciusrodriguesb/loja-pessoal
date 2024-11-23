@@ -36,12 +36,12 @@ namespace WebApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Erro de serviço");
             }
         }
-        [HttpGet("\"buscar/{nuEmpresa}\"")]
-        public async Task<IActionResult> BuscarEmpresa(int nuEmpresa)
+        [HttpGet("buscar/{NuEmpresa}")]
+        public async Task<IActionResult> BuscarEmpresa(int NuEmpresa)
         {
             try
             {
-                var resultado = await _empresaService.BuscarEmpresa(nuEmpresa);
+                var resultado = await _empresaService.BuscarEmpresa(NuEmpresa);
 
                 if (resultado == null)
                     return StatusCode(StatusCodes.Status204NoContent, "Empresa não encontrada.");
