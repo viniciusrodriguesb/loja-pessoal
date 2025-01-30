@@ -1,4 +1,5 @@
 using Infrastructure.CrossCutting;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,12 @@ builder.Services.AddSwaggerConfiguration();
 builder.Services.AddSwaggerGen(options =>
 {
     options.EnableAnnotations();
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Swagger Documentação Web API",
+        Description = "Documentação referente a aplicação de Gerenciamento de Empresas e Serviços.",
+        Contact = new OpenApiContact() { Name = "Vinicius Bastos", Email = "viniciusrbastos@hotmail.com" }
+    });
 });
 
 var app = builder.Build();
