@@ -22,8 +22,13 @@ namespace WebApi.Controllers
         }
         #endregion
 
-        [SwaggerOperation(Description = "Endpoint de criação de um novo usuário")]
+       
         [HttpPost("criar")]
+        [SwaggerOperation(Summary = "Criação de um novo usuário")]
+        [SwaggerResponse(StatusCodes.Status201Created)]
+        [SwaggerResponse(StatusCodes.Status400BadRequest)]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized)]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CriarUsuario(NovoUsuarioRequest request)
         {
             try
@@ -47,8 +52,14 @@ namespace WebApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Erro de serviço");
             }
         }
-        [SwaggerOperation(Description = "Endpoint de busca de usuário específico")]
+
         [HttpGet("buscar/{id}")]
+        [SwaggerOperation(Summary = "Obtém um usuário específico")]
+        [SwaggerResponse(StatusCodes.Status200OK)]
+        [SwaggerResponse(StatusCodes.Status204NoContent)]
+        [SwaggerResponse(StatusCodes.Status400BadRequest)]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized)]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> BuscarUsuario(int id)
         {
             try
@@ -70,9 +81,14 @@ namespace WebApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Erro de serviço");
             }
         }
-        [Authorize]
-        [SwaggerOperation(Description = "Endpoint de edição de usuário específico")]
+
+        [Authorize]       
         [HttpPut("editar")]
+        [SwaggerOperation(Summary = "Edição de usuário específico")]
+        [SwaggerResponse(StatusCodes.Status200OK)]
+        [SwaggerResponse(StatusCodes.Status400BadRequest)]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized)]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> EditarUsuario([FromBody] UsuarioEditadoRequest request, [FromQuery] int Id)
         {
             try
@@ -91,9 +107,14 @@ namespace WebApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Erro de serviço");
             }
         }
-        [Authorize]
-        [SwaggerOperation(Description = "Endpoint de deleção de usuário específico")]
+
+        [Authorize]        
         [HttpDelete("deletar")]
+        [SwaggerOperation(Summary = "Deleção de usuário específico")]
+        [SwaggerResponse(StatusCodes.Status200OK)]
+        [SwaggerResponse(StatusCodes.Status400BadRequest)]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized)]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeletarUsuario([FromBody] int Id)
         {
             try

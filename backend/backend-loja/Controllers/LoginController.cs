@@ -24,7 +24,11 @@ namespace WebApi.Controllers
         }
         #endregion
 
-        [SwaggerOperation(Description = "Endpoint de login com retorno do token de serviço.")]
+        [SwaggerOperation(Summary = "Login com retorno do token de serviço")]
+        [SwaggerResponse(StatusCodes.Status200OK)]
+        [SwaggerResponse(StatusCodes.Status400BadRequest)]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized)]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError)]
         [HttpPost("logar")]
         public async Task<IActionResult> Logar([FromBody] LoginRequest login)
         {
